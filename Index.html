@@ -1,0 +1,1156 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Prontuário Pré-Natal — Avaliação da Gestante</title>
+  <style>
+    :root{
+      --bg:#0b1220;
+      --card:#101b33;
+      --card2:#0f1830;
+      --text:#e9eefc;
+      --muted:#aab7e6;
+      --line:#20325e;
+      --accent:#7aa2ff;
+      --accent2:#4de3c1;
+      --warn:#ffcc66;
+      --danger:#ff6b6b;
+      --ok:#67e480;
+      --shadow: 0 12px 30px rgba(0,0,0,.35);
+      --radius:18px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:var(--sans);
+      background: radial-gradient(1200px 700px at 15% 10%, rgba(122,162,255,.18), transparent 60%),
+                  radial-gradient(1200px 700px at 90% 10%, rgba(77,227,193,.12), transparent 55%),
+                  var(--bg);
+      color:var(--text);
+    }
+    a{color:inherit}
+    .topbar{
+      position:sticky; top:0; z-index:10;
+      backdrop-filter: blur(10px);
+      background: rgba(11,18,32,.72);
+      border-bottom:1px solid rgba(32,50,94,.6);
+    }
+    .wrap{max-width:1200px;margin:0 auto;padding:18px 18px 40px}
+    .row{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+    .title{
+      display:flex;gap:12px;align-items:center;
+      padding:10px 0;
+    }
+    .badge{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:6px 10px;border-radius:999px;
+      background:rgba(122,162,255,.12);
+      border:1px solid rgba(122,162,255,.35);
+      color:var(--text);
+      font-size:12px;
+    }
+    .dot{width:9px;height:9px;border-radius:50%;background:var(--accent2);box-shadow:0 0 12px rgba(77,227,193,.7)}
+    h1{font-size:18px;margin:0}
+    .subtitle{font-size:12px;color:var(--muted);margin-top:2px}
+    .actions{margin-left:auto;display:flex;gap:10px;flex-wrap:wrap}
+    button, .btn{
+      cursor:pointer;
+      border:1px solid rgba(122,162,255,.3);
+      background: rgba(16,27,51,.75);
+      color:var(--text);
+      padding:10px 12px;
+      border-radius:12px;
+      box-shadow: 0 8px 18px rgba(0,0,0,.25);
+      transition:.15s transform,.15s border-color,.15s background;
+      font-size:13px;
+    }
+    button:hover{transform: translateY(-1px); border-color: rgba(122,162,255,.55); background: rgba(16,27,51,.95)}
+    button.primary{
+      border-color: rgba(77,227,193,.45);
+      background: rgba(77,227,193,.10);
+    }
+    button.danger{
+      border-color: rgba(255,107,107,.45);
+      background: rgba(255,107,107,.10);
+    }
+    .grid{
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap:16px;
+      margin-top:18px;
+    }
+    @media (max-width: 980px){
+      .grid{grid-template-columns:1fr}
+    }
+    .card{
+      background: linear-gradient(180deg, rgba(16,27,51,.92), rgba(15,24,48,.88));
+      border:1px solid rgba(32,50,94,.75);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .card header{
+      padding:14px 16px;
+      border-bottom:1px solid rgba(32,50,94,.65);
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
+    }
+    .card header h2{
+      font-size:14px;margin:0;letter-spacing:.2px;
+      display:flex;align-items:center;gap:10px;
+    }
+    .pill{
+      font-size:12px;color:var(--muted);
+      padding:5px 10px;border-radius:999px;border:1px solid rgba(32,50,94,.8);
+      background: rgba(11,18,32,.45);
+    }
+    .card .content{padding:14px 16px}
+    .section-title{
+      font-size:12px;
+      color:var(--muted);
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      margin:18px 0 10px;
+      display:flex;align-items:center;gap:10px;
+    }
+    .section-title:first-child{margin-top:0}
+    .hr{height:1px;background:rgba(32,50,94,.6);margin:12px 0}
+    .form{
+      display:grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap:10px;
+      align-items:end;
+    }
+    .field{grid-column: span 4}
+    .field.span-6{grid-column: span 6}
+    .field.span-8{grid-column: span 8}
+    .field.span-12{grid-column: span 12}
+    label{
+      display:block;
+      font-size:12px;
+      color:var(--muted);
+      margin:0 0 6px;
+    }
+    input, select, textarea{
+      width:100%;
+      padding:10px 10px;
+      border-radius:12px;
+      border:1px solid rgba(32,50,94,.9);
+      background: rgba(11,18,32,.6);
+      color:var(--text);
+      outline:none;
+      font-size:13px;
+    }
+    textarea{min-height:92px;resize:vertical}
+    input[type="date"]{font-family:var(--mono)}
+    .checkgrid{
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap:10px;
+    }
+    @media (max-width: 560px){ .checkgrid{grid-template-columns:1fr} }
+    .check{
+      display:flex;gap:10px;align-items:flex-start;
+      padding:10px 12px;border-radius:14px;
+      border:1px solid rgba(32,50,94,.75);
+      background: rgba(11,18,32,.45);
+    }
+    .check input{width:auto;margin-top:2px}
+    .check b{font-size:13px}
+    .check small{display:block;color:var(--muted);margin-top:4px;font-size:12px}
+    .kpi{
+      display:grid;grid-template-columns: repeat(3,1fr);gap:10px;
+    }
+    @media (max-width: 560px){ .kpi{grid-template-columns:1fr} }
+    .kpi .box{
+      border:1px solid rgba(32,50,94,.75);
+      background: rgba(11,18,32,.45);
+      border-radius:14px;
+      padding:12px;
+    }
+    .kpi .box .v{font-size:18px;font-family:var(--mono)}
+    .kpi .box .l{font-size:12px;color:var(--muted);margin-top:6px}
+    .alerts{
+      display:grid;gap:10px;
+    }
+    .alert{
+      border-radius:14px;
+      padding:12px;
+      border:1px solid rgba(32,50,94,.75);
+      background: rgba(11,18,32,.45);
+      display:flex;gap:10px;align-items:flex-start;
+    }
+    .icon{
+      width:28px;height:28px;border-radius:10px;
+      display:grid;place-items:center;
+      border:1px solid rgba(32,50,94,.75);
+      background: rgba(16,27,51,.65);
+      font-family:var(--mono);
+      flex:0 0 auto;
+    }
+    .alert.warn{border-color: rgba(255,204,102,.55)}
+    .alert.warn .icon{border-color: rgba(255,204,102,.55)}
+    .alert.danger{border-color: rgba(255,107,107,.55)}
+    .alert.danger .icon{border-color: rgba(255,107,107,.55)}
+    .alert.ok{border-color: rgba(103,228,128,.45)}
+    .alert.ok .icon{border-color: rgba(103,228,128,.45)}
+    .alert .t{font-size:13px}
+    .alert .d{font-size:12px;color:var(--muted);margin-top:4px}
+    .tabs{
+      display:flex;gap:8px;flex-wrap:wrap;
+      padding:12px 16px; border-bottom:1px solid rgba(32,50,94,.65);
+      background: rgba(11,18,32,.25);
+    }
+    .tab{
+      padding:8px 10px;border-radius:12px;
+      border:1px solid rgba(32,50,94,.75);
+      background: rgba(11,18,32,.35);
+      color:var(--muted);
+      font-size:12px;
+      cursor:pointer;
+      user-select:none;
+    }
+    .tab.active{
+      color:var(--text);
+      border-color: rgba(122,162,255,.55);
+      background: rgba(122,162,255,.12);
+    }
+    .tabpanes{padding:14px 16px}
+    .pane{display:none}
+    .pane.active{display:block}
+    .footer-note{
+      margin-top:16px;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.4;
+    }
+    .small{
+      font-size:12px;color:var(--muted)
+    }
+    .mono{font-family:var(--mono)}
+    .print-hint{display:none}
+    @media print{
+      :root{ --bg:#fff; --text:#000; --muted:#333; }
+      body{background:#fff;color:#000}
+      .topbar, .actions, .tabs {display:none !important}
+      .card{box-shadow:none;border:1px solid #ccc}
+      input, select, textarea{border:1px solid #bbb;background:#fff;color:#000}
+      .print-hint{display:block;margin:10px 0;color:#000}
+    }
+  </style>
+</head>
+
+<body>
+  <div class="topbar">
+    <div class="wrap">
+      <div class="row">
+        <div class="title">
+          <div class="badge"><span class="dot"></span><span>Prontuário Pré-Natal</span></div>
+          <div>
+            <h1>Avaliação da Gestante — Consultas por Fase da Gestação</h1>
+            <div class="subtitle">Modelo de prontuário estruturado • cálculo IG/DPP • checklist • impressão • salvamento local</div>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="primary" id="btnSave">Salvar</button>
+          <button id="btnLoad">Carregar</button>
+          <button id="btnExport">Exportar JSON</button>
+          <button id="btnImport">Importar JSON</button>
+          <button id="btnPrint">Imprimir</button>
+          <button class="danger" id="btnClear">Limpar</button>
+        </div>
+      </div>
+      <div class="print-hint small">Documento impresso a partir do Prontuário Pré-Natal.</div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="grid">
+      <!-- COLUNA ESQUERDA -->
+      <div class="card">
+        <header>
+          <h2>Identificação & Dados Gestacionais</h2>
+          <span class="pill" id="pillStatus">Pronto para preencher</span>
+        </header>
+        <div class="content">
+          <div class="section-title">Identificação</div>
+          <div class="form" id="formMain">
+            <div class="field span-6">
+              <label>Nome completo</label>
+              <input name="paciente_nome" placeholder="Nome da gestante" />
+            </div>
+            <div class="field">
+              <label>Data de nascimento</label>
+              <input type="date" name="paciente_nasc" />
+            </div>
+            <div class="field">
+              <label>Telefone</label>
+              <input name="paciente_tel" placeholder="(DD) 9xxxx-xxxx" />
+            </div>
+
+            <div class="field span-6">
+              <label>Endereço</label>
+              <input name="paciente_end" placeholder="Rua, nº, bairro, cidade" />
+            </div>
+            <div class="field">
+              <label>Cartão SUS</label>
+              <input name="paciente_cns" class="mono" placeholder="CNS (opcional)" />
+            </div>
+            <div class="field">
+              <label>Profissão/ocupação</label>
+              <input name="paciente_prof" placeholder="Ocupação" />
+            </div>
+
+            <div class="field span-12">
+              <label>Responsável/contato de emergência</label>
+              <input name="paciente_contato" placeholder="Nome e telefone" />
+            </div>
+          </div>
+
+          <div class="hr"></div>
+
+          <div class="section-title">Cálculo de Idade Gestacional (IG) & DPP</div>
+          <div class="form">
+            <div class="field">
+              <label>DUM (Data da Última Menstruação)</label>
+              <input type="date" name="gest_dum" id="gest_dum" />
+            </div>
+            <div class="field">
+              <label>Data da consulta</label>
+              <input type="date" name="gest_data_consulta" id="gest_data_consulta" />
+            </div>
+            <div class="field">
+              <label>IG por USG (se houver)</label>
+              <select name="gest_ig_usg_tipo" id="gest_ig_usg_tipo">
+                <option value="">— não informado —</option>
+                <option value="semanas_dias">Semanas + dias</option>
+                <option value="dpp_usg">DPP estimada pela USG</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>USG: semanas</label>
+              <input type="number" min="0" max="45" name="gest_ig_usg_sem" id="gest_ig_usg_sem" placeholder="Ex.: 12" />
+            </div>
+            <div class="field">
+              <label>USG: dias</label>
+              <input type="number" min="0" max="6" name="gest_ig_usg_dias" id="gest_ig_usg_dias" placeholder="Ex.: 3" />
+            </div>
+            <div class="field">
+              <label>USG: DPP (data)</label>
+              <input type="date" name="gest_dpp_usg" id="gest_dpp_usg" />
+            </div>
+
+            <div class="field span-12">
+              <button type="button" id="btnCalc">Calcular IG/DPP & Atualizar Resumo</button>
+            </div>
+          </div>
+
+          <div class="kpi" style="margin-top:12px">
+            <div class="box">
+              <div class="v" id="kpiIG">—</div>
+              <div class="l">Idade gestacional (estimada)</div>
+            </div>
+            <div class="box">
+              <div class="v" id="kpiDPP">—</div>
+              <div class="l">DPP (estimada)</div>
+            </div>
+            <div class="box">
+              <div class="v" id="kpiTrimestre">—</div>
+              <div class="l">Fase/Trimestre</div>
+            </div>
+          </div>
+
+          <div class="footer-note">
+            Este template organiza o registro em fases (1º/2º/3º trimestre e puerpério) e inclui campos usuais do pré-natal.
+            Ajuste conforme fluxos, protocolos e sistema de classificação de risco do seu município/estado.
+          </div>
+        </div>
+      </div>
+
+      <!-- COLUNA DIREITA -->
+      <div class="card">
+        <header>
+          <h2>Resumo Clínico, Risco & Alertas</h2>
+          <span class="pill mono" id="pillKey">ID: —</span>
+        </header>
+        <div class="content">
+          <div class="section-title">Sinais vitais e antropometria</div>
+          <div class="form">
+            <div class="field">
+              <label>PA (mmHg)</label>
+              <input name="sv_pa" id="sv_pa" placeholder="Ex.: 120/80" />
+            </div>
+            <div class="field">
+              <label>FC (bpm)</label>
+              <input type="number" min="0" name="sv_fc" id="sv_fc" placeholder="Ex.: 82" />
+            </div>
+            <div class="field">
+              <label>Temp (°C)</label>
+              <input type="number" step="0.1" name="sv_temp" id="sv_temp" placeholder="Ex.: 36.5" />
+            </div>
+
+            <div class="field">
+              <label>Peso (kg)</label>
+              <input type="number" step="0.1" name="ant_peso" id="ant_peso" placeholder="Ex.: 72.4" />
+            </div>
+            <div class="field">
+              <label>Altura (cm)</label>
+              <input type="number" step="0.1" name="ant_altura" id="ant_altura" placeholder="Ex.: 162" />
+            </div>
+            <div class="field">
+              <label>IMC</label>
+              <input name="ant_imc" id="ant_imc" class="mono" placeholder="calculado" readonly />
+            </div>
+
+            <div class="field span-12">
+              <label>Queixa principal e evolução</label>
+              <textarea name="resumo_qp" placeholder="Queixas, início, intensidade, fatores de melhora/piora, sintomas associados..."></textarea>
+            </div>
+          </div>
+
+          <div class="hr"></div>
+
+          <div class="section-title">Classificação de risco (triagem)</div>
+          <div class="checkgrid" id="riskChecks">
+            <div class="check">
+              <input type="checkbox" name="risk_hipertensao" />
+              <div>
+                <b>Hipertensão/PA elevada ou suspeita</b>
+                <small>História prévia, PA alterada na consulta, sinais de alarme.</small>
+              </div>
+            </div>
+            <div class="check">
+              <input type="checkbox" name="risk_diabetes" />
+              <div>
+                <b>Diabetes prévia / suspeita / DMG</b>
+                <small>História, glicemias alteradas, rastreios.</small>
+              </div>
+            </div>
+            <div class="check">
+              <input type="checkbox" name="risk_infeccoes" />
+              <div>
+                <b>Infecções relevantes</b>
+                <small>ITU recorrente, IST, febre, corioamnionite suspeita, etc.</small>
+              </div>
+            </div>
+            <div class="check">
+              <input type="checkbox" name="risk_sangramento" />
+              <div>
+                <b>Sangramento / dor intensa / perda de líquido</b>
+                <small>Vaginal, suspeita de RPM, dor abdominal importante.</small>
+              </div>
+            </div>
+            <div class="check">
+              <input type="checkbox" name="risk_restricao" />
+              <div>
+                <b>Suspeita de RCIU / sofrimento fetal</b>
+                <small>Movimentos fetais reduzidos, USG/medidas alteradas.</small>
+              </div>
+            </div>
+            <div class="check">
+              <input type="checkbox" name="risk_outros" />
+              <div>
+                <b>Outros fatores de risco</b>
+                <small>Gemelaridade, pré-eclâmpsia prévia, trombofilias, etc.</small>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-title">Alertas automáticos (apoio ao registro)</div>
+          <div class="alerts" id="alerts"></div>
+
+          <div class="section-title">Conduta / Plano</div>
+          <textarea name="plano_conduta" placeholder="Orientações, prescrições, encaminhamentos, retorno, educação em saúde..."></textarea>
+
+          <div class="footer-note">
+            Os alertas abaixo são apenas “regras de apoio” simples (ex.: PA alta). Não substituem julgamento clínico nem protocolos oficiais.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ABA / FASES -->
+    <div class="card" style="margin-top:16px">
+      <header>
+        <h2>Registro por Fase da Gestação</h2>
+        <span class="pill">1º tri • 2º tri • 3º tri • Puerpério</span>
+      </header>
+
+      <div class="tabs" id="tabs">
+        <div class="tab active" data-pane="p1">1º Trimestre</div>
+        <div class="tab" data-pane="p2">2º Trimestre</div>
+        <div class="tab" data-pane="p3">3º Trimestre</div>
+        <div class="tab" data-pane="pp">Puerpério</div>
+        <div class="tab" data-pane="hx">História & Antecedentes</div>
+        <div class="tab" data-pane="ex">Exame Obstétrico</div>
+        <div class="tab" data-pane="labs">Exames & Vacinas</div>
+      </div>
+
+      <div class="tabpanes">
+        <!-- 1º trimestre -->
+        <div class="pane active" id="p1">
+          <div class="section-title">Checklists — 1º Trimestre</div>
+          <div class="checkgrid">
+            <div class="check">
+              <input type="checkbox" name="t1_confirmacao_gest" />
+              <div><b>Confirmação da gestação</b><small>Data provável de concepção, sinais, testes, USG inicial.</small></div>
+            </div>
+            <div class="check">
+              <input type="checkbox" name="t1_estratificacao" />
+              <div><b>Estratificação de risco inicial</b><small>Condições prévias, obstétricas e sociais.</small></div>
+            </div>
+            <div class="check">
+              <input type="checkbox" name="t1_suplementacao" />
+              <div><b>Suplementação / orientações</b><small>Ácido fólico/ferro conforme rotina local; hábitos e sinais de alarme.</small></div>
+            </div>
+            <div class="check">
+              <input type="checkbox" name="t1_exames_iniciais" />
+              <div><b>Solicitação/registro de exames iniciais</b><small>Hemograma, tipagem/Rh, sorologias, urina, glicemia etc.</small></div>
+            </div>
+          </div>
+
+          <div class="section-title">Evolução — 1º Trimestre</div>
+          <textarea name="t1_evolucao" placeholder="Anote evolução, intercorrências, orientação e plano."></textarea>
+
+          <div class="section-title">Orientações & educação em saúde</div>
+          <textarea name="t1_orientacoes" placeholder="Alimentação, atividade, medicações seguras, náuseas/vômitos, sinais de alarme, rede de apoio..."></textarea>
+        </div>
+
+        <!-- 2º trimestre -->
+        <div class="pane" id="p2">
+          <div class="section-title">Checklists — 2º Trimestre</div>
+          <div class="checkgrid">
+            <div class="check">
+              <input type="checkbox" name="t2_movimentos_fetais" />
+              <div><b>Movimentos fetais</b><small>Início, padrão, orientações de percepção.</small></div>
+            </div>
+            <div class="check">
+              <input type="checkbox" name="t2_anatomica" />
+              <div><b>USG morfológica (quando aplicável)</b><small>Registro de achados/referência.</small></div>
+            </div>
+            <div class="check">
+              <input type="checkbox" name="t2_rastreio_dmg" />
+              <div><b>Rastreio de DMG</b><small>Registro de testes conforme rotina local.</small></div>
+            </div>
+            <div class="check">
+              <input type="checkbox" name="t2_prevencao" />
+              <div><b>Prevenções e vigilância</b><small>PA, ganho ponderal, sintomas urinários, IST, saúde mental.</small></div>
+            </div>
+          </div>
+
+          <div class="section-title">Evolução — 2º Trimestre</div>
+          <textarea name="t2_evolucao" placeholder="Registro por consulta no 2º trimestre."></textarea>
+
+          <div class="section-title">Plano</div>
+          <textarea name="t2_plano" placeholder="Retorno, exames, orientações e encaminhamentos."></textarea>
+        </div>
+
+        <!-- 3º trimestre -->
+        <div class="pane" id="p3">
+          <div class="section-title">Checklists — 3º Trimestre</div>
+          <div class="checkgrid">
+            <div class="check">
+              <input type="checkbox" name="t3_apresentacao_fetal" />
+              <div><b>Apresentação fetal / altura uterina</b><small>Registro seriado e conduta se alteração.</small></div>
+            </div>
+            <div class="check">
+              <input type="checkbox" name="t3_planejamento_parto" />
+              <div><b>Planejamento do parto</b><small>Local de referência, sinais de trabalho de parto, plano de segurança.</small></div>
+            </div>
+            <div class="check">
+              <input type="checkbox" name="t3_estrepto_b" />
+              <div><b>GBS / Streptococcus do grupo B</b><small>Registro conforme rotina local (se aplicável).</small></div>
+            </div>
+            <div class="check">
+              <input type="checkbox" name="t3_vigilancia_pe" />
+              <div><b>Vigilância de pré-eclâmpsia</b><small>PA, edema, cefaleia, escotomas, epigastralgia.</small></div>
+            </div>
+          </div>
+
+          <div class="section-title">Evolução — 3º Trimestre</div>
+          <textarea name="t3_evolucao" placeholder="Registro por consulta no 3º trimestre."></textarea>
+
+          <div class="section-title">Plano / Encaminhamentos</div>
+          <textarea name="t3_plano" placeholder="Retornos mais frequentes, riscos, referência, orientações."></textarea>
+        </div>
+
+        <!-- Puerpério -->
+        <div class="pane" id="pp">
+          <div class="section-title">Puerpério — avaliação</div>
+          <div class="form">
+            <div class="field">
+              <label>Data do parto</label>
+              <input type="date" name="pp_data_parto" />
+            </div>
+            <div class="field">
+              <label>Tipo de parto</label>
+              <select name="pp_tipo_parto">
+                <option value="">—</option>
+                <option>Vaginal</option>
+                <option>Cesárea</option>
+                <option>Instrumental</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>RN — peso (g)</label>
+              <input type="number" name="pp_rn_peso" placeholder="Ex.: 3200" />
+            </div>
+
+            <div class="field span-6">
+              <label>Aleitamento</label>
+              <select name="pp_aleitamento">
+                <option value="">—</option>
+                <option>Exclusivo</option>
+                <option>Predominante</option>
+                <option>Misto</option>
+                <option>Não</option>
+              </select>
+            </div>
+            <div class="field span-6">
+              <label>Contracepção pós-parto</label>
+              <input name="pp_contracepcao" placeholder="Método orientado/realizado" />
+            </div>
+
+            <div class="field span-12">
+              <label>Intercorrências / avaliação física / saúde mental</label>
+              <textarea name="pp_evolucao" placeholder="Sangramento, dor, febre, sinais de infecção, mamas, humor, vínculo, rede de apoio, risco..."></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- História & Antecedentes -->
+        <div class="pane" id="hx">
+          <div class="section-title">História obstétrica</div>
+          <div class="form">
+            <div class="field">
+              <label>G (gestações)</label>
+              <input type="number" min="0" name="hx_g" />
+            </div>
+            <div class="field">
+              <label>P (partos)</label>
+              <input type="number" min="0" name="hx_p" />
+            </div>
+            <div class="field">
+              <label>A (abortos)</label>
+              <input type="number" min="0" name="hx_a" />
+            </div>
+            <div class="field">
+              <label>C (cesáreas)</label>
+              <input type="number" min="0" name="hx_c" />
+            </div>
+            <div class="field span-8">
+              <label>Complicações obstétricas prévias</label>
+              <input name="hx_complicacoes" placeholder="Pré-eclâmpsia, hemorragia, prematuridade, etc." />
+            </div>
+            <div class="field span-4">
+              <label>Gestação planejada?</label>
+              <select name="hx_planejada">
+                <option value="">—</option>
+                <option>Sim</option>
+                <option>Não</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="section-title">Antecedentes pessoais & familiares</div>
+          <div class="form">
+            <div class="field span-6">
+              <label>Doenças crônicas</label>
+              <input name="hx_cronicas" placeholder="HAS, DM, tireoide, asma, cardiopatia..." />
+            </div>
+            <div class="field span-6">
+              <label>Cirurgias / internações</label>
+              <input name="hx_cirurgias" />
+            </div>
+            <div class="field span-6">
+              <label>Alergias</label>
+              <input name="hx_alergias" />
+            </div>
+            <div class="field span-6">
+              <label>Uso de medicamentos</label>
+              <input name="hx_meds" placeholder="Nome, dose, tempo" />
+            </div>
+
+            <div class="field span-6">
+              <label>História familiar relevante</label>
+              <input name="hx_familiar" placeholder="DM, HAS, trombofilias, malformações..." />
+            </div>
+            <div class="field span-6">
+              <label>Hábitos</label>
+              <input name="hx_habitos" placeholder="Tabaco, álcool, outras substâncias, atividade física" />
+            </div>
+
+            <div class="field span-12">
+              <label>Aspectos psicossociais / vulnerabilidades</label>
+              <textarea name="hx_psicossocial" placeholder="Rede de apoio, violência, trabalho, moradia, segurança alimentar, saúde mental..."></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Exame obstétrico -->
+        <div class="pane" id="ex">
+          <div class="section-title">Exame físico geral</div>
+          <div class="form">
+            <div class="field span-12">
+              <label>Achados relevantes</label>
+              <textarea name="ex_geral" placeholder="Inspeção geral, edema, mamas, tireoide, coração/pulmões, etc."></textarea>
+            </div>
+          </div>
+
+          <div class="section-title">Exame obstétrico</div>
+          <div class="form">
+            <div class="field">
+              <label>Altura uterina (cm)</label>
+              <input type="number" min="0" step="0.5" name="ob_au" id="ob_au" placeholder="Ex.: 28" />
+            </div>
+            <div class="field">
+              <label>BCF (bpm)</label>
+              <input type="number" min="0" name="ob_bcf" id="ob_bcf" placeholder="Ex.: 145" />
+            </div>
+            <div class="field">
+              <label>Movimentos fetais</label>
+              <select name="ob_mf" id="ob_mf">
+                <option value="">—</option>
+                <option>Presentes</option>
+                <option>Diminuídos</option>
+                <option>Ausentes/Não referidos</option>
+              </select>
+            </div>
+
+            <div class="field span-6">
+              <label>Apresentação fetal</label>
+              <select name="ob_apresentacao">
+                <option value="">—</option>
+                <option>Cefálica</option>
+                <option>Pélvica</option>
+                <option>Transversa/oblíqua</option>
+                <option>Indeterminada</option>
+              </select>
+            </div>
+            <div class="field span-6">
+              <label>Edema</label>
+              <select name="ob_edema" id="ob_edema">
+                <option value="">—</option>
+                <option>Ausente</option>
+                <option>Leve</option>
+                <option>Moderado</option>
+                <option>Importante</option>
+              </select>
+            </div>
+
+            <div class="field span-12">
+              <label>Toque/colo/queixas ginecológicas (se realizado)</label>
+              <textarea name="ob_toque" placeholder="Somente se aplicável e conforme conduta."></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Exames & Vacinas -->
+        <div class="pane" id="labs">
+          <div class="section-title">Exames laboratoriais (registro)</div>
+          <div class="form">
+            <div class="field span-6">
+              <label>Tipagem ABO/Rh</label>
+              <input name="lab_abo_rh" placeholder="Ex.: O+ / A- ..." />
+            </div>
+            <div class="field span-6">
+              <label>Coombs indireto (se aplicável)</label>
+              <input name="lab_coombs" placeholder="Resultado e data" />
+            </div>
+
+            <div class="field span-6">
+              <label>Hemograma</label>
+              <input name="lab_hemograma" placeholder="Hb/Ht/plaquetas + data" />
+            </div>
+            <div class="field span-6">
+              <label>Glicemia / rastreio DMG</label>
+              <input name="lab_glicemia" placeholder="Jejum/TOTG + datas" />
+            </div>
+
+            <div class="field span-6">
+              <label>Urina tipo I / urocultura</label>
+              <input name="lab_urina" placeholder="Resultados + datas" />
+            </div>
+            <div class="field span-6">
+              <label>IST/Sorologias</label>
+              <input name="lab_sorologias" placeholder="HIV, sífilis, hepatites, etc. + datas" />
+            </div>
+
+            <div class="field span-12">
+              <label>Ultrassons (datas e achados principais)</label>
+              <textarea name="lab_usg" placeholder="USG inicial, morfológica, crescimento, placenta, LA, doppler, etc."></textarea>
+            </div>
+          </div>
+
+          <div class="section-title">Vacinas (registro)</div>
+          <div class="checkgrid">
+            <div class="check">
+              <input type="checkbox" name="vac_influenza" />
+              <div><b>Influenza</b><small>Data/observações no campo abaixo.</small></div>
+            </div>
+            <div class="check">
+              <input type="checkbox" name="vac_dTpa" />
+              <div><b>dTpa</b><small>Conforme rotina local (registrar data).</small></div>
+            </div>
+            <div class="check">
+              <input type="checkbox" name="vac_hepb" />
+              <div><b>Hepatite B</b><small>Esquema/registro.</small></div>
+            </div>
+            <div class="check">
+              <input type="checkbox" name="vac_covid" />
+              <div><b>COVID-19</b><small>Esquema/registro.</small></div>
+            </div>
+          </div>
+
+          <div class="section-title">Registro detalhado de vacinas</div>
+          <textarea name="vac_registro" placeholder="Ex.: Influenza 2026-02-24, lote..., local de aplicação..., reações..."></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="small" style="margin-top:14px;color:var(--muted)">
+      Dica: preencha a consulta, clique em <b>Salvar</b> e depois <b>Imprimir</b>. Você pode <b>Exportar JSON</b> para integrar em outro sistema futuramente.
+    </div>
+  </div>
+
+  <input type="file" id="fileImport" accept="application/json" style="display:none" />
+
+  <script>
+    (function(){
+      const STORAGE_KEY = "prenatal_prontuario_v1";
+      const $ = (sel, root=document) => root.querySelector(sel);
+      const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+
+      // --- Helpers de data
+      function parseDate(v){
+        if(!v) return null;
+        const d = new Date(v + "T00:00:00");
+        return isNaN(d.getTime()) ? null : d;
+      }
+      function fmtDate(d){
+        if(!d) return "—";
+        const dd = String(d.getDate()).padStart(2,"0");
+        const mm = String(d.getMonth()+1).padStart(2,"0");
+        const yy = d.getFullYear();
+        return `${dd}/${mm}/${yy}`;
+      }
+      function addDays(d, days){
+        const x = new Date(d.getTime());
+        x.setDate(x.getDate() + days);
+        return x;
+      }
+      function diffDays(a,b){
+        // b - a
+        const ms = (b.getTime() - a.getTime());
+        return Math.floor(ms / (1000*60*60*24));
+      }
+      function weeksDaysFromDays(days){
+        const w = Math.floor(days / 7);
+        const r = days % 7;
+        return {w, r};
+      }
+
+      // --- Coleta e aplicação de dados
+      function collect(){
+        const data = {};
+        const inputs = $$("input, select, textarea");
+        inputs.forEach(el=>{
+          if(!el.name) return;
+          if(el.type === "checkbox"){
+            data[el.name] = !!el.checked;
+          }else{
+            data[el.name] = el.value ?? "";
+          }
+        });
+        data._meta = {
+          savedAt: new Date().toISOString(),
+          version: 1
+        };
+        return data;
+      }
+      function apply(data){
+        if(!data) return;
+        const inputs = $$("input, select, textarea");
+        inputs.forEach(el=>{
+          if(!el.name) return;
+          if(!(el.name in data)) return;
+          if(el.type === "checkbox"){
+            el.checked = !!data[el.name];
+          }else{
+            el.value = data[el.name] ?? "";
+          }
+        });
+        updateComputed();
+      }
+
+      // --- UI Tabs
+      $$("#tabs .tab").forEach(tab=>{
+        tab.addEventListener("click", ()=>{
+          $$("#tabs .tab").forEach(t=>t.classList.remove("active"));
+          tab.classList.add("active");
+          const target = tab.dataset.pane;
+          $$(".pane").forEach(p=>p.classList.remove("active"));
+          $("#"+target).classList.add("active");
+        });
+      });
+
+      // --- Cálculo IMC
+      function calcBMI(kg, cm){
+        if(!kg || !cm) return null;
+        const m = cm / 100;
+        if(m <= 0) return null;
+        return kg / (m*m);
+      }
+
+      // --- Cálculo IG/DPP (prioridade: USG se informado, senão DUM)
+      function calcGestational(){
+        const dum = parseDate($("#gest_dum").value);
+        const dc  = parseDate($("#gest_data_consulta").value);
+
+        const usgTipo = $("#gest_ig_usg_tipo").value;
+        const usgSem = Number($("#gest_ig_usg_sem").value || 0);
+        const usgDias = Number($("#gest_ig_usg_dias").value || 0);
+        const dppUsg = parseDate($("#gest_dpp_usg").value);
+
+        let igDays = null;
+        let dpp = null;
+        let basis = null;
+
+        if(dc){
+          if(usgTipo === "dpp_usg" && dppUsg){
+            // IG = 280 - (DPP - consulta)
+            const daysToDpp = diffDays(dc, dppUsg);
+            igDays = 280 - daysToDpp;
+            dpp = dppUsg;
+            basis = "USG (DPP)";
+          } else if(usgTipo === "semanas_dias" && (usgSem > 0 || usgDias > 0)){
+            // DPP = consulta + (280 - IG)
+            igDays = (usgSem * 7) + usgDias;
+            dpp = addDays(dc, 280 - igDays);
+            basis = "USG (IG)";
+          } else if(dum){
+            igDays = diffDays(dum, dc);
+            dpp = addDays(dum, 280);
+            basis = "DUM";
+          }
+        }
+
+        if(igDays == null || igDays < 0) return {ig:null, dpp:null, tri:null, basis:null};
+
+        const wd = weeksDaysFromDays(igDays);
+        const igStr = `${wd.w}sem + ${wd.r}d`;
+        let tri = "—";
+        if(wd.w < 14) tri = "1º Trimestre";
+        else if(wd.w < 28) tri = "2º Trimestre";
+        else if(wd.w <= 42) tri = "3º Trimestre";
+        else tri = "Pós-termo / revisar datas";
+
+        return {ig: igStr, dpp: fmtDate(dpp), tri, basis};
+      }
+
+      // --- Alertas automáticos simples (apoio)
+      function updateAlerts(){
+        const alerts = [];
+        const pa = ($("#sv_pa").value || "").trim();
+        const temp = Number($("#sv_temp").value || "");
+        const mf = $("#ob_mf").value;
+        const edema = $("#ob_edema").value;
+        const bcf = Number($("#ob_bcf").value || "");
+
+        // PA
+        // tenta extrair sist/diast
+        let sys=null, dia=null;
+        const m = pa.match(/(\d{2,3})\s*\/\s*(\d{2,3})/);
+        if(m){
+          sys = Number(m[1]); dia = Number(m[2]);
+          if(sys >= 140 || dia >= 90){
+            alerts.push({type:"danger", icon:"!", t:"PA elevada registrada", d:`PA ${sys}/${dia} mmHg. Avaliar sinais/sintomas e conduta conforme protocolo.`});
+          } else if(sys >= 130 || dia >= 85){
+            alerts.push({type:"warn", icon:"i", t:"PA limítrofe", d:`PA ${sys}/${dia} mmHg. Repetir medida e acompanhar.`});
+          } else {
+            alerts.push({type:"ok", icon:"✓", t:"PA sem alarme pelo valor informado", d:`PA ${sys}/${dia} mmHg.`});
+          }
+        }
+
+        // Temperatura
+        if(!isNaN(temp) && temp >= 38){
+          alerts.push({type:"warn", icon:"i", t:"Febre referida/medida", d:`Temperatura ${temp}°C. Investigar foco e risco materno-fetal.`});
+        }
+
+        // Movimentos fetais
+        if(mf === "Diminuídos"){
+          alerts.push({type:"warn", icon:"i", t:"Movimentos fetais diminuídos", d:"Registrar detalhes, orientar e avaliar conforme fase gestacional e protocolo."});
+        } else if(mf === "Ausentes/Não referidos"){
+          alerts.push({type:"danger", icon:"!", t:"Movimentos fetais ausentes/não referidos", d:"Confirmar informação, avaliar vitalidade fetal conforme conduta."});
+        }
+
+        // Edema
+        if(edema === "Importante"){
+          alerts.push({type:"warn", icon:"i", t:"Edema importante", d:"Correlacionar com PA/sintomas e investigar sinais de alerta."});
+        }
+
+        // BCF
+        if(!isNaN(bcf) && bcf>0){
+          if(bcf < 110 || bcf > 160){
+            alerts.push({type:"warn", icon:"i", t:"BCF fora da faixa usual", d:`BCF ${bcf} bpm. Reavaliar ausculta/conduta.`});
+          } else {
+            alerts.push({type:"ok", icon:"✓", t:"BCF dentro da faixa usual", d:`BCF ${bcf} bpm.`});
+          }
+        }
+
+        // Checks de risco (se qualquer marcado, alerta de atenção)
+        const anyRisk = $$(`#riskChecks input[type="checkbox"]`).some(c=>c.checked);
+        if(anyRisk){
+          alerts.push({type:"warn", icon:"i", t:"Fatores de risco marcados", d:"Revisar estratificação, plano e referência/contrarreferência."});
+        }
+
+        // Render
+        const wrap = $("#alerts");
+        wrap.innerHTML = "";
+        if(alerts.length === 0){
+          const div = document.createElement("div");
+          div.className = "alert";
+          div.innerHTML = `<div class="icon">•</div><div><div class="t">Sem alertas automáticos</div><div class="d">Preencha PA, temperatura e dados obstétricos para gerar lembretes.</div></div>`;
+          wrap.appendChild(div);
+          return;
+        }
+        alerts.forEach(a=>{
+          const div = document.createElement("div");
+          div.className = `alert ${a.type}`;
+          div.innerHTML = `<div class="icon">${a.icon}</div><div><div class="t">${a.t}</div><div class="d">${a.d}</div></div>`;
+          wrap.appendChild(div);
+        });
+      }
+
+      // --- Atualizações computadas (IMC, IG/DPP, IDs)
+      function updateComputed(){
+        // IMC
+        const kg = Number($("#ant_peso").value || "");
+        const cm = Number($("#ant_altura").value || "");
+        const bmi = calcBMI(kg, cm);
+        $("#ant_imc").value = (bmi && isFinite(bmi)) ? bmi.toFixed(1) : "";
+
+        // IG/DPP
+        const g = calcGestational();
+        $("#kpiIG").textContent = g.ig || "—";
+        $("#kpiDPP").textContent = g.dpp || "—";
+        $("#kpiTrimestre").textContent = g.tri || "—";
+
+        const status = [];
+        if(g.basis) status.push(`Base: ${g.basis}`);
+        if($("#paciente_nome").value?.trim()) status.push("Identificação ok");
+        $("#pillStatus").textContent = status.length ? status.join(" • ") : "Pronto para preencher";
+
+        // ID pseudo
+        const nome = ($("#paciente_nome").value || "").trim();
+        const cns = ($("#paciente_cns").value || "").trim();
+        const key = (cns || nome || "SEM_ID").slice(0,24);
+        $("#pillKey").textContent = `ID: ${key || "—"}`;
+
+        updateAlerts();
+      }
+
+      // --- Eventos
+      $$("#formMain input, #gest_dum, #gest_data_consulta, #gest_ig_usg_tipo, #gest_ig_usg_sem, #gest_ig_usg_dias, #gest_dpp_usg, #sv_pa, #sv_temp, #ant_peso, #ant_altura, #ob_mf, #ob_edema, #ob_bcf").forEach(el=>{
+        el.addEventListener("input", updateComputed);
+        el.addEventListener("change", updateComputed);
+      });
+      $$("#riskChecks input[type='checkbox']").forEach(el=>{
+        el.addEventListener("change", updateComputed);
+      });
+
+      $("#btnCalc").addEventListener("click", updateComputed);
+
+      // --- Salvar/Carregar local
+      $("#btnSave").addEventListener("click", ()=>{
+        const data = collect();
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        $("#pillStatus").textContent = "Salvo localmente • " + new Date().toLocaleString("pt-BR");
+      });
+
+      $("#btnLoad").addEventListener("click", ()=>{
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if(!raw){
+          alert("Não há dados salvos neste dispositivo/navegador.");
+          return;
+        }
+        try{
+          const data = JSON.parse(raw);
+          apply(data);
+          $("#pillStatus").textContent = "Dados carregados • " + new Date().toLocaleString("pt-BR");
+        }catch(e){
+          alert("Falha ao carregar dados salvos (JSON inválido).");
+        }
+      });
+
+      $("#btnClear").addEventListener("click", ()=>{
+        if(!confirm("Limpar todos os campos? (isso não pode ser desfeito)")) return;
+        $$("input, select, textarea").forEach(el=>{
+          if(!el.name) return;
+          if(el.type === "checkbox") el.checked = false;
+          else el.value = "";
+        });
+        updateComputed();
+      });
+
+      // --- Exportar/Importar JSON
+      $("#btnExport").addEventListener("click", ()=>{
+        const data = collect();
+        const blob = new Blob([JSON.stringify(data, null, 2)], {type:"application/json"});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        const safeName = (data.paciente_nome || "prenatal").toString().trim().replace(/\s+/g,"_").slice(0,40);
+        a.href = url;
+        a.download = `${safeName}_prontuario_prenatal.json`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      });
+
+      $("#btnImport").addEventListener("click", ()=>{
+        $("#fileImport").click();
+      });
+
+      $("#fileImport").addEventListener("change", async (ev)=>{
+        const file = ev.target.files && ev.target.files[0];
+        if(!file) return;
+        try{
+          const text = await file.text();
+          const data = JSON.parse(text);
+          apply(data);
+          $("#pillStatus").textContent = "JSON importado • " + new Date().toLocaleString("pt-BR");
+        }catch(e){
+          alert("Falha ao importar: arquivo JSON inválido.");
+        }finally{
+          ev.target.value = "";
+        }
+      });
+
+      // --- Imprimir
+      $("#btnPrint").addEventListener("click", ()=>{
+        window.print();
+      });
+
+      // --- Pré-preencher data da consulta (hoje) se vazio
+      const today = new Date();
+      const yyyy = today.getFullYear();
+      const mm = String(today.getMonth()+1).padStart(2,"0");
+      const dd = String(today.getDate()).padStart(2,"0");
+      const iso = `${yyyy}-${mm}-${dd}`;
+      if(!$("#gest_data_consulta").value) $("#gest_data_consulta").value = iso;
+
+      // --- Carregar automático se existir (opcional)
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if(raw){
+        try{ apply(JSON.parse(raw)); }catch(_){}
+      }
+      updateComputed();
+    })();
+  </script>
+</body>
+</html>
